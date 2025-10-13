@@ -74,7 +74,6 @@
         <div>当前状态: <span id="currentStatus">未运行</span></div>
     </div>
 <script>
-let isFirstLoad = true;
 
 window.onload = function() {
     // 页面加载时立即获取状态
@@ -86,6 +85,7 @@ window.onload = function() {
     // 定时刷新日志（每3秒）
     setInterval(loadLogs, 3000);
 };
+let isFirstLoad = true;
 
 // 单独封装获取状态的函数
 function fetchStatus() {
@@ -122,6 +122,17 @@ function fetchStatus() {
                 // 更新按钮状态
                 const setBtn = document.getElementById('setShutdown');
                 const cancelBtn = document.getElementById('cancelShutdown');
+                if (setBtn && cancelBtn) {
+                    if (data.shutdown_scheduled) {
+                        setBtn.disabled = true;
+                        cancelBtn.disabled = false;
+                        setBtn.textContent = "已设置定时关机";
+                    } else {
+                        setBtn.disabled = false;
+                        cancelBtn.disabled = true;
+                        setBtn.textContent = "设置定时关机";
+                    }
+                }
                 // 首次加载完成后更新标记
                 if (isFirstLoad) {
                     isFirstLoad = false;
