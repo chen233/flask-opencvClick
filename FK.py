@@ -7,6 +7,7 @@ from functools import wraps
 import time
 import psutil
 import opencv_button_click
+import platform
 
 app = Flask(__name__)
 scheduler = BackgroundScheduler()
@@ -33,8 +34,11 @@ def init_files():
                 "time1": "00:00",
                 "time2": "00:00",
                 "time3": "00:00",
-                "time4": "00:00"
-            }
+                "time4": "00:00",
+                "shutdown_time": "23:59"  # 添加关机时间配置
+
+        },
+            "shutdown_scheduled": False  # 记录是否已设置定时关机
         }
         with open(STATUS_FILE, "w", encoding="utf-8") as f:
             json.dump(default_status, f, ensure_ascii=False, indent=2)
@@ -48,6 +52,81 @@ def init_files():
 
 
 init_files()
+
+# 关机执行函数
+def shutdown_machine():
+    """执行关机操作，根据操作系统类型适配"""
+    try:
+        sys_name = platform.system()
+        if sys_name == "Windows":
+            os.system("shutdown /s /t 60")  # Windows系统，60秒后关机
+        elif sys_name == "Linux" or sys_name == "Darwin":  # Linux或macOS
+            os.system("shutdown -h +1")  # 1分钟后关机
+        write_log("定时关机指令已执行")
+    except Exception as e:
+        write_log(f"执行关机时出错: {str(e)}")
+
+
+# 设置定时关机API
+@app.route('/api/set_shutdown', methods=['POST'])
+def set_shutdown():
+    try:
+        shutdown_time = request.json.get('time')
+        if not shutdown_time:
+            return jsonify({"success": False, "message": "请指定关机时间"})
+
+        # 清除现有关机任务
+        for job in scheduler.get_jobs():
+            if job.name == "shutdown_task":
+                scheduler.remove_job(job.id)
+
+        # 添加新的关机任务
+        hour, minute = map(int, shutdown_time.split(':'))
+        scheduler.add_job(
+            shutdown_machine,
+            'cron',
+            hour=hour,
+            minute=minute,
+            name="shutdown_task"  # 给任务命名，方便后续管理
+        )
+
+        # 更新状态
+        status = read_status()
+        status["config"]["shutdown_time"] = shutdown_time
+        status["shutdown_scheduled"] = True
+        write_status(status)
+        write_log(f"已设置定时关机: {shutdown_time}")
+
+        return jsonify({"success": True, "message": f"定时关机已设置为 {shutdown_time}"})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
+
+
+# 取消定时关机API
+@app.route('/api/cancel_shutdown', methods=['POST'])
+def cancel_shutdown():
+    try:
+        # 清除关机任务
+        for job in scheduler.get_jobs():
+            if job.name == "shutdown_task":
+                scheduler.remove_job(job.id)
+
+        # 更新状态
+        status = read_status()
+        status["shutdown_scheduled"] = False
+        write_status(status)
+        write_log("定时关机已取消")
+
+        # 取消系统中已设置的关机计划
+        sys_name = platform.system()
+        if sys_name == "Windows":
+            os.system("shutdown /a")  # 取消Windows关机计划
+        elif sys_name == "Linux" or sys_name == "Darwin":
+            os.system("shutdown -c")  # 取消Linux/macOS关机计划
+
+        return jsonify({"success": True, "message": "定时关机已取消"})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
 
 
 # 装饰器：确保文件操作的安全性（避免并发写入冲突）
@@ -297,8 +376,11 @@ def get_status():
                 "time1": "14:00",
                 "time2": "19:00",
                 "time3": "21:00",
-                "time4": "23:59"
-            })
+                "time4": "23:59",
+                "shutdown_time": "23:59"  # 添加关机时间
+            }),
+            "shutdown_scheduled": status.get("shutdown_scheduled", False)  # 添加关机状态
+
         })
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
