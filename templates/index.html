@@ -46,8 +46,7 @@
             <input type="time" id="time4" value="00:00">
         </div>
     </div>
-
-    <!-- 在定时执行时间配置后添加 -->
+        <!-- 在定时执行时间配置后添加 -->
     <div class="config-area">
         <h3>定时关机设置</h3>
         <div>
@@ -59,7 +58,6 @@
     <!-- 在工作流控制按钮区域添加 -->
     <button id="setShutdown">设置定时关机</button>
     <button id="cancelShutdown">取消定时关机</button>
-
 
     <!-- 工作流控制按钮 -->
     <div class="button-area">
@@ -75,10 +73,10 @@
         <div class="log-content" id="logContent"></div>
         <div>当前状态: <span id="currentStatus">未运行</span></div>
     </div>
-
-
 <script>
-    window.onload = function() {
+let isFirstLoad = true;
+
+window.onload = function() {
     // 页面加载时立即获取状态
     fetchStatus();
     // 定时刷新状态（每5秒）
@@ -88,7 +86,6 @@
     // 定时刷新日志（每3秒）
     setInterval(loadLogs, 3000);
 };
-let isFirstLoad = true;
 
 // 单独封装获取状态的函数
 function fetchStatus() {
@@ -101,7 +98,7 @@ function fetchStatus() {
         })
         .then(data => {
             if (data.success) {
-                // 更新关机时间输入框
+                            // 更新关机时间输入框
                 const shutdownTimeInput = document.getElementById('shutdownTime');
                 if (shutdownTimeInput && data.config.shutdown_time) {
                     // 首次加载时设置值，或者输入框为空且不是用户正在编辑时更新
@@ -112,10 +109,9 @@ function fetchStatus() {
                 // 更新状态显示区域
                 const statusDiv = document.getElementById('currentStatus');
                 if (statusDiv) {
-                    // 保存原始状态文本（不含关机信息）
-                    const baseStatusText = statusDiv.textContent.replace(/ \(已设置定时关机: .*\)/, '');
+                    // 直接根据数据更新基础状态
+                    let baseStatusText = data.running ? '工作流运行中...' : '工作流已停止';
 
-                    // 根据状态更新显示
                     if (data.shutdown_scheduled) {
                         statusDiv.textContent = `${baseStatusText} (已设置定时关机: ${data.config.shutdown_time})`;
                     } else {
@@ -126,23 +122,20 @@ function fetchStatus() {
                 // 更新按钮状态
                 const setBtn = document.getElementById('setShutdown');
                 const cancelBtn = document.getElementById('cancelShutdown');
-
-                if (setBtn && cancelBtn) {
-                    if (data.shutdown_scheduled) {
-                        setBtn.disabled = true;
-                        cancelBtn.disabled = false;
-                        setBtn.textContent = "已设置定时关机";
-                    } else {
-                        setBtn.disabled = false;
-                        cancelBtn.disabled = true;
-                        setBtn.textContent = "设置定时关机";
-                    }
-                }
-
                 // 首次加载完成后更新标记
                 if (isFirstLoad) {
                     isFirstLoad = false;
                 }
+
+
+                // 填充配置时间到表单
+                document.getElementById('time1').value = data.config.time1 || '14:00';
+                document.getElementById('time2').value = data.config.time2 || '19:00';
+                document.getElementById('time3').value = data.config.time3 || '21:00';
+                document.getElementById('time4').value = data.config.time4 || '23:59';
+
+                // 更新工作流状态显示
+                updateStatus(data.running);
             } else {
                 console.error('获取状态失败:', data.message);
             }
@@ -248,7 +241,7 @@ function updateStatus(isRunning) {
             .catch(error => console.error("获取日志失败:", error));
         }, 2000);
 
-        // 设置定时关机
+                // 设置定时关机
         document.getElementById("setShutdown").addEventListener("click", function() {
             const time = document.getElementById("shutdownTime").value;
             if (!time) {
@@ -298,13 +291,10 @@ function updateStatus(isRunning) {
             });
         });
 
-        // 定时刷新状态（每30秒）
-        setInterval(fetchStatus, 30000);
 
         // 页面加载时立即获取一次状态
         window.addEventListener('load', fetchStatus);
 
-
-</script>
+    </script>
 </body>
 </html>

@@ -37,7 +37,7 @@ def init_files():
                 "time4": "00:00",
                 "shutdown_time": "23:59"  # 添加关机时间配置
 
-        },
+            },
             "shutdown_scheduled": False  # 记录是否已设置定时关机
         }
         with open(STATUS_FILE, "w", encoding="utf-8") as f:
@@ -52,7 +52,6 @@ def init_files():
 
 
 init_files()
-
 # 关机执行函数
 def shutdown_machine():
     """执行关机操作，根据操作系统类型适配"""
@@ -380,7 +379,6 @@ def get_status():
                 "shutdown_time": "23:59"  # 添加关机时间
             }),
             "shutdown_scheduled": status.get("shutdown_scheduled", False)  # 添加关机状态
-
         })
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
