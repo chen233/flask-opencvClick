@@ -66,13 +66,13 @@ def open_vm():
     # 需要先打开AB组
     BUTTON_SEQUENCE = [
         # 点击虚拟机管理按钮
-        ("img/虚拟机管理/虚拟机管理1.PNG", 1),
+        ("img/VMguanli/VMguanli1.PNG", 1),
         # 点击刷新虚拟机
-        ("img/虚拟机管理/虚拟机刷新.PNG", 1),
+        ("img/VMguanli/VMF5.PNG", 1),
         # 点击全选
-        ("img/虚拟机管理/虚拟机全选.PNG", 1),
+        ("img/VMguanli/VMallIn.PNG", 1),
         # 虚拟机开机
-        ("img/虚拟机管理/虚拟机开机.PNG", 1),
+        ("img/VMguanli/VMopen.PNG", 1),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
     TIMEOUT = 1800  # 每个按钮的超时时间(秒)
@@ -82,13 +82,13 @@ def close_vm():
     # 需要先打开AB组
     BUTTON_SEQUENCE = [
         # 点击虚拟机管理按钮
-        ("img/虚拟机管理/虚拟机管理1.PNG", 1),
+        ("img/VMguanli/VMguanli1.PNG", 1),
         # 点击刷新虚拟机
-        ("img/虚拟机管理/虚拟机刷新.PNG", 1),
+        ("img/VMguanli/VMF5.PNG", 1),
         # 点击全选
-        ("img/虚拟机管理/虚拟机全选.PNG", 1),
+        ("img/VMguanli/VMallIn.PNG", 1),
         # 虚拟机开机
-        ("img/虚拟机管理/虚拟机关机.PNG", 1),
+        ("img/VMguanli/VMclose.PNG", 1),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
     TIMEOUT = 1800  # 每个按钮的超时时间(秒)
@@ -106,8 +106,8 @@ def open_exe(exe_files):
                 print(f"找到并打开exe文件: {exe_path}")
                 BUTTON_SEQUENCE = [
                     # 点击程序确定按钮
-                    ("img/开启程序/确认.PNG", 1),
-                    ("img/开启程序/登录.PNG", 1)
+                    ("img/openexe/yes.PNG", 1),
+                    ("img/openexe/login.PNG", 1)
                 ]
                 MATCH_THRESHOLD = 0.85  # 匹配阈值
                 TIMEOUT = 1800  # 每个按钮的超时时间(秒)
@@ -121,56 +121,24 @@ def open_exe(exe_files):
 
 def close_exe():
     BUTTON_SEQUENCE = [
-        ("img/控制台/控制台1.PNG", 1),
-        ("img/控制台/全选.PNG", 1),
-        ("img/控制台/刷新.PNG", 1),
-        ("img/控制台/关闭游戏.PNG", 1),
+        ("img/kongZhiTai/kongZhiTai1.PNG", 1),
+        ("img/kongZhiTai/allIn.PNG", 1),
+        ("img/kongZhiTai/F5.PNG", 1),
+        ("img/kongZhiTai/closeGame.PNG", 1),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
     TIMEOUT = 1800  # 每个按钮的超时时间(秒)
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
 
-def close_program(window_title):
-    """
-    关闭指定标题的程序
-    参数:
-        window_title: 窗口标题（支持模糊匹配）
-    """
-    hwnd = None
 
-    def callback(wnd, param):
-        nonlocal hwnd
-        if window_title in win32gui.GetWindowText(wnd) and win32gui.IsWindowVisible(wnd):
-            hwnd = wnd
-        return True
-
-    win32gui.EnumWindows(callback, None)
-
-    if not hwnd:
-        print(f"未找到标题包含 '{window_title}' 的窗口")
-        return False
-
-    # 获取窗口对应的进程ID
-    _, pid = win32process.GetWindowThreadProcessId(hwnd)
-    # 根据进程ID打开进程
-    process_handle = win32api.OpenProcess(win32con.PROCESS_TERMINATE, False, pid)
-    if process_handle:
-        # 终止进程
-        win32api.TerminateProcess(process_handle, 0)
-        win32api.CloseHandle(process_handle)
-        print(f"程序（窗口标题含'{window_title}'）已关闭")
-        return True
-    else:
-        print(f"无法打开进程以关闭程序（窗口标题含'{window_title}'）")
-        return False
 def click_AB():
     BUTTON_SEQUENCE = [
         # 点击账号管理
-        ("img/账号管理/账号管理1.PNG", 1),
-        ("img/账号管理/账号管理全选.PNG", 1),
-        ("img/账号管理/账号管理刷新.PNG", 1),
-        ("img/账号管理/监控登录.PNG", 1),
+        ("img/UserManagement/UserMan1.PNG", 1),
+        ("img/UserManagement/Userallin.PNG", 1),
+        ("img/UserManagement/UserF5.PNG", 1),
+        ("img/UserManagement/Loginjiankong.PNG", 1),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
     TIMEOUT = 1800  # 每个按钮的超时时间(秒)
@@ -180,10 +148,10 @@ def click_AB():
 def close_AB():
     BUTTON_SEQUENCE = [
         # 点击账号管理
-        ("img/账号管理/账号管理1.PNG", 1),
-        ("img/账号管理/账号管理全选.PNG", 1),
-        ("img/账号管理/账号管理刷新.PNG", 1),
-        ("img/账号管理/停止登录.PNG", 1),
+        ("img/UserManagement/UserMan1.PNG", 1),
+        ("img/UserManagement/Userallin.PNG", 1),
+        ("img/UserManagement/UserF5.PNG", 1),
+        ("img/UserManagement/StopLogin.PNG", 1),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
     TIMEOUT = 1800  # 每个按钮的超时时间(秒)

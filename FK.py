@@ -340,6 +340,7 @@ def workflow_task(desc):
         else:
             print("未检测到运行中的VM程序")
             opencv_button_click.open_vm()
+        opencv_button_click.click_AB()
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "B组结束":
         set_window_topmost("yoo", topmost=True)
