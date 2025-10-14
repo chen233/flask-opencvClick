@@ -65,16 +65,30 @@ def process_buttons_in_sequence(button_sequence, threshold=0.85, timeout=15):
 def open_vm():
     # 需要先打开AB组
     BUTTON_SEQUENCE = [
-        # 点击程序确定按钮
-        ("button1_template.png", 3),
         # 点击虚拟机管理按钮
-        ("button2_template.png", 3),
+        ("img/虚拟机管理/虚拟机管理1.PNG", 1),
         # 点击刷新虚拟机
-        ("button2_template.png", 3),
+        ("img/虚拟机管理/虚拟机刷新.PNG", 1),
         # 点击全选
-        ("button2_template.png", 3),
+        ("img/虚拟机管理/虚拟机全选.PNG", 1),
         # 虚拟机开机
-        ("button2_template.png", 3),
+        ("img/虚拟机管理/虚拟机开机.PNG", 1),
+    ]
+    MATCH_THRESHOLD = 0.85  # 匹配阈值
+    TIMEOUT = 1800  # 每个按钮的超时时间(秒)
+    # 执行按钮序列
+    process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
+def close_vm():
+    # 需要先打开AB组
+    BUTTON_SEQUENCE = [
+        # 点击虚拟机管理按钮
+        ("img/虚拟机管理/虚拟机管理1.PNG", 1),
+        # 点击刷新虚拟机
+        ("img/虚拟机管理/虚拟机刷新.PNG", 1),
+        # 点击全选
+        ("img/虚拟机管理/虚拟机全选.PNG", 1),
+        # 虚拟机开机
+        ("img/虚拟机管理/虚拟机关机.PNG", 1),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
     TIMEOUT = 1800  # 每个按钮的超时时间(秒)
@@ -86,27 +100,90 @@ def open_exe(exe_files):
     # 执行AB组任务,exe_name是A组或B组
     for root, _, files in os.walk(exe_files):
         for file in files:
-            if file.lower().endswith('.exe'):
+            # 检查文件名是否以点开头（通常表示隐藏文件）且是exe文件
+            if file.lower().endswith('.exe') and not file.startswith('.'):
                 exe_path = os.path.join(root, file)
                 print(f"找到并打开exe文件: {exe_path}")
+                BUTTON_SEQUENCE = [
+                    # 点击程序确定按钮
+                    ("img/开启程序/确认.PNG", 1),
+                    ("img/开启程序/登录.PNG", 1)
+                ]
+                MATCH_THRESHOLD = 0.85  # 匹配阈值
+                TIMEOUT = 1800  # 每个按钮的超时时间(秒)
+                # 执行按钮序列
+                process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
                 try:
                     # 打开找到的exe文件
                     os.startfile(exe_path)
                 except Exception as e:
                     print(f"打开文件时出错: {e}")
 
-def close_exe(exe_files):
+def close_exe():
     BUTTON_SEQUENCE = [
-        # 点击程序确定按钮
-        ("button1_template.png", 3),
-        # 点击虚拟机管理按钮
-        ("button2_template.png", 3),
-        # 点击刷新虚拟机
-        ("button2_template.png", 3),
-        # 点击全选
-        ("button2_template.png", 3),
-        # 虚拟机开机
-        ("button2_template.png", 3),
+        ("img/控制台/控制台1.PNG", 1),
+        ("img/控制台/全选.PNG", 1),
+        ("img/控制台/刷新.PNG", 1),
+        ("img/控制台/关闭游戏.PNG", 1),
+    ]
+    MATCH_THRESHOLD = 0.85  # 匹配阈值
+    TIMEOUT = 1800  # 每个按钮的超时时间(秒)
+    # 执行按钮序列
+    process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
+
+def close_program(window_title):
+    """
+    关闭指定标题的程序
+    参数:
+        window_title: 窗口标题（支持模糊匹配）
+    """
+    hwnd = None
+
+    def callback(wnd, param):
+        nonlocal hwnd
+        if window_title in win32gui.GetWindowText(wnd) and win32gui.IsWindowVisible(wnd):
+            hwnd = wnd
+        return True
+
+    win32gui.EnumWindows(callback, None)
+
+    if not hwnd:
+        print(f"未找到标题包含 '{window_title}' 的窗口")
+        return False
+
+    # 获取窗口对应的进程ID
+    _, pid = win32process.GetWindowThreadProcessId(hwnd)
+    # 根据进程ID打开进程
+    process_handle = win32api.OpenProcess(win32con.PROCESS_TERMINATE, False, pid)
+    if process_handle:
+        # 终止进程
+        win32api.TerminateProcess(process_handle, 0)
+        win32api.CloseHandle(process_handle)
+        print(f"程序（窗口标题含'{window_title}'）已关闭")
+        return True
+    else:
+        print(f"无法打开进程以关闭程序（窗口标题含'{window_title}'）")
+        return False
+def click_AB():
+    BUTTON_SEQUENCE = [
+        # 点击账号管理
+        ("img/账号管理/账号管理1.PNG", 1),
+        ("img/账号管理/账号管理全选.PNG", 1),
+        ("img/账号管理/账号管理刷新.PNG", 1),
+        ("img/账号管理/监控登录.PNG", 1),
+    ]
+    MATCH_THRESHOLD = 0.85  # 匹配阈值
+    TIMEOUT = 1800  # 每个按钮的超时时间(秒)
+    # 执行按钮序列
+    process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
+
+def close_AB():
+    BUTTON_SEQUENCE = [
+        # 点击账号管理
+        ("img/账号管理/账号管理1.PNG", 1),
+        ("img/账号管理/账号管理全选.PNG", 1),
+        ("img/账号管理/账号管理刷新.PNG", 1),
+        ("img/账号管理/停止登录.PNG", 1),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
     TIMEOUT = 1800  # 每个按钮的超时时间(秒)

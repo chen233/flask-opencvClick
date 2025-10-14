@@ -28,22 +28,43 @@
     <!-- 定时执行时间配置 -->
     <div class="config-area">
         <h3>定时执行时间</h3>
-        <div>
-            <label>A组开始:</label>
-            <input type="time" id="time1" value="00:00">
-        </div>
-        <div>
-            <label>A组停止:</label>
-            <input type="time" id="time2" value="00:00">
-        </div>
-        <div>
-            <label>B组开始:</label>
-            <input type="time" id="time3" value="00:00">
-        </div>
+        <div style="display: table-cell;width:300px">
+            <div>
+                <label>A组开始:</label>
+                <input type="time" id="time1" value="00:00">
+            </div>
+            <div>
+                <label>A组停止:</label>
+                <input type="time" id="time2" value="00:00">
+            </div>
+            <div>
+                <label>B组开始:</label>
+                <input type="time" id="time3" value="00:00">
+            </div>
 
-        <div>
-            <label>B组停止:</label>
-            <input type="time" id="time4" value="00:00">
+            <div>
+                <label>B组停止:</label>
+                <input type="time" id="time4" value="00:00">
+            </div>
+        </div>
+        <div style="display: table-cell;">
+            <div>
+                <label>A组开始:</label>
+                <input type="time" id="time5" value="00:00">
+            </div>
+            <div>
+                <label>A组停止:</label>
+                <input type="time" id="time6" value="00:00">
+            </div>
+            <div>
+                <label>B组开始:</label>
+                <input type="time" id="time7" value="00:00">
+            </div>
+
+            <div>
+                <label>B组停止:</label>
+                <input type="time" id="time8" value="00:00">
+            </div>
         </div>
     </div>
         <!-- 在定时执行时间配置后添加 -->
@@ -78,12 +99,12 @@
 window.onload = function() {
     // 页面加载时立即获取状态
     fetchStatus();
-    // 定时刷新状态（每5秒）
-    setInterval(fetchStatus, 5000);
+<!--    // 定时刷新状态（每5秒）-->
+<!--    setInterval(fetchStatus, 10000);-->
     // 初始加载日志
     loadLogs();
     // 定时刷新日志（每3秒）
-    setInterval(loadLogs, 3000);
+    setInterval(loadLogs, 6000);
 };
 let isFirstLoad = true;
 
@@ -144,6 +165,10 @@ function fetchStatus() {
                 document.getElementById('time2').value = data.config.time2 || '19:00';
                 document.getElementById('time3').value = data.config.time3 || '21:00';
                 document.getElementById('time4').value = data.config.time4 || '23:59';
+                document.getElementById('time5').value = data.config.time5 || '14:00';
+                document.getElementById('time6').value = data.config.time6 || '19:00';
+                document.getElementById('time7').value = data.config.time7 || '21:00';
+                document.getElementById('time8').value = data.config.time8 || '23:59';
 
                 // 更新工作流状态显示
                 updateStatus(data.running);
@@ -212,7 +237,11 @@ function updateStatus(isRunning) {
                 time1: document.getElementById("time1").value,
                 time2: document.getElementById("time2").value,
                 time3: document.getElementById("time3").value,
-                time4: document.getElementById("time4").value
+                time4: document.getElementById("time4").value,
+                time5: document.getElementById("time5").value,
+                time6: document.getElementById("time6").value,
+                time7: document.getElementById("time7").value,
+                time8: document.getElementById("time8").value
             };
             fetch("/api/save_config", {
                 method: "POST",
@@ -242,15 +271,15 @@ function updateStatus(isRunning) {
             logDiv.scrollTop = logDiv.scrollHeight; // 滚动到底部
         }
 
-        // 轮询获取日志（模拟实时日志）
-        setInterval(() => {
-            fetch("/api/get_log")
-            .then(response => response.json())
-            .then(data => {
-                data.logs.forEach(log => appendLog(log));
-            })
-            .catch(error => console.error("获取日志失败:", error));
-        }, 2000);
+<!--        // 轮询获取日志（模拟实时日志）-->
+<!--        setInterval(() => {-->
+<!--            fetch("/api/get_log")-->
+<!--            .then(response => response.json())-->
+<!--            .then(data => {-->
+<!--                data.logs.forEach(log => appendLog(log));-->
+<!--            })-->
+<!--            .catch(error => console.error("获取日志失败:", error));-->
+<!--        }, 20000);-->
 
                 // 设置定时关机
         document.getElementById("setShutdown").addEventListener("click", function() {

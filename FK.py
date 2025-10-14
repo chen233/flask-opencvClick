@@ -8,6 +8,8 @@ import time
 import psutil
 import opencv_button_click
 import platform
+import win32gui
+import win32con
 
 app = Flask(__name__)
 scheduler = BackgroundScheduler()
@@ -35,6 +37,10 @@ def init_files():
                 "time2": "00:00",
                 "time3": "00:00",
                 "time4": "00:00",
+                "time5": "00:00",
+                "time6": "00:00",
+                "time7": "00:00",
+                "time8": "00:00",
                 "shutdown_time": "23:59"  # 添加关机时间配置
 
             },
@@ -52,11 +58,88 @@ def init_files():
 
 
 init_files()
+def set_window_topmost(window_title, topmost=True):
+    # 查找窗口句柄
+    hwnd = None
+    def callback(wnd, param):
+        nonlocal hwnd
+        if window_title in win32gui.GetWindowText(wnd) and win32gui.IsWindowVisible(wnd):
+            nonlocal hwnd
+            hwnd = wnd
+        return True
+
+    win32gui.EnumWindows(callback, None)
+
+    if not hwnd:
+        print(f"未找到标题包含 '{window_title}' 的窗口")
+        return False
+
+    # 设置窗口置顶属性
+    ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
+    if topmost:
+        # 添加置顶属性
+        if not (ex_style & win32con.WS_EX_TOPMOST):
+            win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, ex_style | win32con.WS_EX_TOPMOST)
+            print(f"窗口 '{window_title}' 已设置为置顶")
+    else:
+        # 移除置顶属性
+        if ex_style & win32con.WS_EX_TOPMOST:
+            win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, ex_style & ~win32con.WS_EX_TOPMOST)
+            print(f"窗口 '{window_title}' 已取消置顶")
+
+    # 刷新窗口
+    win32gui.SetWindowPos(
+        hwnd,
+        win32con.HWND_TOPMOST if topmost else win32con.HWND_NOTOPMOST,
+        0, 0, 0, 0,
+        win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
+    )
+    return True
+
+def close_window(window_title):
+    """关闭指定标题的窗口（发送正常关闭消息，而非强制终止）"""
+    # 复用窗口查找逻辑（和置顶函数保持一致）
+    hwnd = None
+
+    def callback(wnd, param):
+        nonlocal hwnd
+        if window_title in win32gui.GetWindowText(wnd) and win32gui.IsWindowVisible(wnd):
+            hwnd = wnd
+        return True
+
+    win32gui.EnumWindows(callback, None)
+
+    if not hwnd:
+        print(f"未找到标题包含 '{window_title}' 的窗口")
+        return False
+
+    # 发送关闭消息（模拟用户点击窗口的关闭按钮）
+    # 先发送WM_CLOSE消息（正常关闭）
+    win32gui.SendMessage(hwnd, win32con.WM_CLOSE, 0, 0)
+    print(f"已向窗口 '{window_title}' 发送关闭消息")
+
+    # 等待窗口关闭（最多等待3秒）
+    import time
+    for _ in range(30):  # 30*0.1=3秒
+        if not win32gui.IsWindow(hwnd):  # 检查窗口是否已关闭
+            print(f"窗口 '{window_title}' 已成功关闭")
+            return True
+        time.sleep(0.1)
+
+    # 如果正常关闭失败，尝试强制关闭
+    print(f"窗口 '{window_title}' 未响应关闭消息，尝试强制关闭...")
+    win32gui.PostMessage(hwnd, win32con.WM_QUIT, 0, 0)
+    return True
+
+
 # 关机执行函数
 def shutdown_machine():
     """执行关机操作，根据操作系统类型适配"""
+    # 将标题包含"yoo"的窗口置顶
+    set_window_topmost("yoo", topmost=True)
     try:
         sys_name = platform.system()
+        opencv_button_click.close_vm()
         if sys_name == "Windows":
             os.system("shutdown /s /t 60")  # Windows系统，60秒后关机
         elif sys_name == "Linux" or sys_name == "Darwin":  # Linux或macOS
@@ -236,17 +319,22 @@ def workflow_task(desc):
     # 例如：调用接口、执行脚本、处理数据等
     if desc == "A组开始":
         opencv_button_click.open_exe(A_name)
+        set_window_topmost("yoo", topmost=True)
         if running_vms:
             print(f"检测到运行中的VM程序：{', '.join(running_vms)}")
         else:
             print("未检测到运行中的VM程序")
             opencv_button_click.open_vm()
+        opencv_button_click.click_AB()
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "A组停止":
-        opencv_button_click.close_exe(A_name)
+        set_window_topmost("yoo", topmost=True)
+        opencv_button_click.close_exe()
+        close_window("yoo")
         task_result = f"[{desc}] else业务逻辑执行完成"  # 模拟业务结果
     elif desc == "B组开始":
         opencv_button_click.open_exe(B_name)
+        set_window_topmost("yoo", topmost=True)
         if running_vms:
             print(f"检测到运行中的VM程序：{', '.join(running_vms)}")
         else:
@@ -254,7 +342,9 @@ def workflow_task(desc):
             opencv_button_click.open_vm()
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "B组结束":
-        opencv_button_click.close_exe(B_name)
+        set_window_topmost("yoo", topmost=True)
+        opencv_button_click.close_exe()
+        close_window("yoo")
         task_result = f"[{desc}] else业务逻辑执行完成"  # 模拟业务结果
 
     # ==============================
@@ -300,6 +390,30 @@ def start_workflow():
             workflow_task, 'cron',
             hour=config["time4"].split(':')[0],
             minute=config["time4"].split(':')[1],
+            args=["B组停止"]
+        )
+        scheduler.add_job(
+            workflow_task, 'cron',
+            hour=config["time5"].split(':')[0],
+            minute=config["time5"].split(':')[1],
+            args=["A组开始"]
+        )
+        scheduler.add_job(
+            workflow_task, 'cron',
+            hour=config["time6"].split(':')[0],
+            minute=config["time6"].split(':')[1],
+            args=["A组停止"]
+        )
+        scheduler.add_job(
+            workflow_task, 'cron',
+            hour=config["time7"].split(':')[0],
+            minute=config["time7"].split(':')[1],
+            args=["B组开始"]
+        )
+        scheduler.add_job(
+            workflow_task, 'cron',
+            hour=config["time8"].split(':')[0],
+            minute=config["time8"].split(':')[1],
             args=["B组停止"]
         )
 
@@ -376,6 +490,10 @@ def get_status():
                 "time2": "19:00",
                 "time3": "21:00",
                 "time4": "23:59",
+                "time5": "14:00",
+                "time6": "19:00",
+                "time7": "21:00",
+                "time8": "23:59",
                 "shutdown_time": "23:59"  # 添加关机时间
             }),
             "shutdown_scheduled": status.get("shutdown_scheduled", False)  # 添加关机状态
@@ -389,4 +507,4 @@ if __name__ == '__main__':
     A_name = desktop_path + "\A组"
     B_name = desktop_path + "\B组"
     print(A_name)
-    app.run(debug=False)
+    app.run(debug=True)

@@ -1,0 +1,15 @@
+{
+  "workflow_running": false,
+  "config": {
+    "time1": "00:00",
+    "time2": "04:00",
+    "time3": "04:05",
+    "time4": "09:00",
+    "time5": "17:00",
+    "time6": "21:00",
+    "time7": "21:05",
+    "time8": "00:00",
+    "shutdown_time": "23:59"
+  },
+  "shutdown_scheduled": true
+}
