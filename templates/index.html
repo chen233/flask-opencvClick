@@ -85,6 +85,7 @@
         <button id="startWorkflow">开始工作流</button>
         <button id="stopWorkflow">停止工作流</button>
         <button id="saveConfig">保存配置</button>
+<!--        <button id="exportBtn" class="btn btn-primary">导出数据</button>-->
     </div>
 
 
@@ -230,6 +231,20 @@ function updateStatus(isRunning) {
                 appendLog("请求错误: " + error);
             });
         });
+<!--        document.getElementById('exportBtn').addEventListener('click', async function() {-->
+<!--            try {-->
+<!--                const response = await fetch('/api/export', {-->
+<!--                    method: 'POST',-->
+<!--                    headers: {-->
+<!--                        'Content-Type': 'application/json'-->
+<!--                    }-->
+<!--                });-->
+<!--                const result = await response.json();-->
+<!--                alert(result.message);-->
+<!--            } catch (e) {-->
+<!--                alert('导出失败: ' + e.message);-->
+<!--            }-->
+<!--        });-->
 
         // 保存配置
         document.getElementById("saveConfig").addEventListener("click", function() {

@@ -302,6 +302,7 @@ def check_vm_running(vm_process_names):
 
 # 工作流执行函数（实际业务逻辑）
 def workflow_task(desc):
+    global task_result
     vm_programs = [
         "VirtualBoxVM",  # VirtualBox虚拟机进程
         "vmware-vmx",  # VMware虚拟机进程
@@ -329,6 +330,8 @@ def workflow_task(desc):
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "A组停止":
         set_window_topmost("yoo", topmost=True)
+        opencv_button_click.outExcel()
+        opencv_button_click.close_AB()
         opencv_button_click.close_exe()
         close_window("yoo")
         task_result = f"[{desc}] else业务逻辑执行完成"  # 模拟业务结果
@@ -342,8 +345,10 @@ def workflow_task(desc):
             opencv_button_click.open_vm()
         opencv_button_click.click_AB()
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
-    elif desc == "B组结束":
+    elif desc == "B组停止":
         set_window_topmost("yoo", topmost=True)
+        opencv_button_click.outExcel()
+        opencv_button_click.close_AB()
         opencv_button_click.close_exe()
         close_window("yoo")
         task_result = f"[{desc}] else业务逻辑执行完成"  # 模拟业务结果
@@ -460,7 +465,32 @@ def save_config():
         return jsonify({"success": True, "message": "配置保存成功"})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
-
+#
+# # 在FK.py中添加导出功能处理函数
+# def export_data():
+#     """导出功能执行函数"""
+#     try:
+#         # 这里添加你需要执行的导出逻辑
+#         print("执行导出操作...")
+#         # 示例：可以在这里添加导出文件、处理数据等操作
+#         write_log("导出操作已执行")
+#         return True, "导出成功"
+#     except Exception as e:
+#         write_log(f"导出失败: {str(e)}")
+#         return False, str(e)
+#
+# # 添加导出API接口
+# @app.route('/api/export', methods=['POST'])
+# def handle_export():
+#     try:
+#         success, message = export_data()
+#         if success:
+#             return jsonify({"success": True, "message": message})
+#         else:
+#             return jsonify({"success": False, "message": message})
+#     except Exception as e:
+#         return jsonify({"success": False, "message": str(e)})
+#
 
 # 获取最新日志（支持分页，避免一次性加载过大文件）
 @app.route('/api/get_log', methods=['GET'])

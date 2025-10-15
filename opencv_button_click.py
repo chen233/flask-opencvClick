@@ -1,11 +1,33 @@
+from datetime import datetime
+
 import cv2
 import numpy as np
-import pyautogui
-import time
 import mss
 import os
+import pyautogui
+import time
+import pyperclip
+import platform  # 用于适配不同系统的粘贴快捷键
 
 
+def auto_input_filename(filename):
+    try:
+        # 粘贴文件名到输入框
+        pyperclip.copy(filename)  # 把文件名复制到剪贴板
+        time.sleep(0.3)  # 确保剪贴板同步完成
+
+        # 适配系统粘贴快捷键（Windows/Linux用Ctrl+V，Mac用Command+V）
+        if platform.system() == "Darwin":  # Mac系统
+            pyautogui.hotkey('command', 'v')
+        else:  # Windows/Linux系统
+            pyautogui.hotkey('ctrl', 'v')
+
+        print(f"已成功输入文件名：{filename}")
+        return True
+
+    except Exception as e:
+        print(f"输入文件名失败：{str(e)}")
+        return False
 
 def find_button(template_path, threshold=0.8, timeout=10):
     """查找单个按钮并返回中心坐标"""
@@ -72,7 +94,7 @@ def open_vm():
         # 点击全选
         ("img/VMguanli/VMallIn.PNG", 1),
         # 虚拟机开机
-        ("img/VMguanli/VMopen.PNG", 1),
+        ("img/VMguanli/VMopen.PNG", 600),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
     TIMEOUT = 1800  # 每个按钮的超时时间(秒)
@@ -87,11 +109,11 @@ def close_vm():
         ("img/VMguanli/VMF5.PNG", 1),
         # 点击全选
         ("img/VMguanli/VMallIn.PNG", 1),
-        # 虚拟机开机
-        ("img/VMguanli/VMclose.PNG", 1),
+        # 虚拟机guan机
+        ("img/VMguanli/VMclose.PNG", 60),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
-    TIMEOUT = 1800  # 每个按钮的超时时间(秒)
+    TIMEOUT = 180  # 每个按钮的超时时间(秒)
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
 
@@ -102,35 +124,85 @@ def open_exe(exe_files):
         for file in files:
             # 检查文件名是否以点开头（通常表示隐藏文件）且是exe文件
             if file.lower().endswith('.exe') and not file.startswith('.'):
-                exe_path = os.path.join(root, file)
+                exe_path = os.path.join(root, "._cache_"+file)
                 print(f"找到并打开exe文件: {exe_path}")
-                BUTTON_SEQUENCE = [
-                    # 点击程序确定按钮
-                    ("img/openexe/yes.PNG", 1),
-                    ("img/openexe/login.PNG", 1)
-                ]
-                MATCH_THRESHOLD = 0.85  # 匹配阈值
-                TIMEOUT = 1800  # 每个按钮的超时时间(秒)
-                # 执行按钮序列
-                process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
                 try:
                     # 打开找到的exe文件
                     os.startfile(exe_path)
+                    BUTTON_SEQUENCE = [
+                        # 点击程序确定按钮
+                        ("img/openexe/yes.PNG", 3),
+                        ("img/openexe/login.PNG", 3)
+                    ]
+                    MATCH_THRESHOLD = 0.85  # 匹配阈值
+                    TIMEOUT = 180  # 每个按钮的超时时间(秒)
+                    # 执行按钮序列
+                    process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
                 except Exception as e:
                     print(f"打开文件时出错: {e}")
+
+def auto_input_filename(filename):
+    try:
+        # 粘贴文件名到输入框
+        pyperclip.copy(filename)  # 把文件名复制到剪贴板
+        time.sleep(0.3)  # 确保剪贴板同步完成
+
+        # 适配系统粘贴快捷键（Windows/Linux用Ctrl+V，Mac用Command+V）
+        if platform.system() == "Darwin":  # Mac系统
+            pyautogui.hotkey('command', 'v')
+        else:  # Windows/Linux系统
+            pyautogui.hotkey('ctrl', 'v')
+
+        print(f"已成功输入文件名：{filename}")
+        return True
+
+    except Exception as e:
+        print(f"输入文件名失败：{str(e)}")
+        return False
 
 def close_exe():
     BUTTON_SEQUENCE = [
         ("img/kongZhiTai/kongZhiTai1.PNG", 1),
+        ("img/kongZhiTai/cheak1.PNG", 1),
+        ("img/kongZhiTai/cheak.PNG", 1),
         ("img/kongZhiTai/allIn.PNG", 1),
         ("img/kongZhiTai/F5.PNG", 1),
-        ("img/kongZhiTai/closeGame.PNG", 1),
+        ("img/kongZhiTai/closeGame.PNG", 30),
+        ("img/kongZhiTai/closeGame1.PNG", 30),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
-    TIMEOUT = 1800  # 每个按钮的超时时间(秒)
+    TIMEOUT = 10  # 每个按钮的超时时间(秒)
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
 
+def outExcel():
+    BUTTON_SEQUENCE = [
+        ("img/kongZhiTai/kongZhiTai1.PNG", 1),
+        ("img/kongZhiTai/outTxt.PNG", 1),
+        ("img/kongZhiTai/outTxt1.PNG", 1),
+        ("img/kongZhiTai/outTxt2.png", 1),
+    ]
+    MATCH_THRESHOLD = 0.85  # 匹配阈值
+    TIMEOUT = 10  # 每个按钮的超时时间(秒)
+    # 执行按钮序列
+    process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
+
+    auto_input_filename(datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+    BUTTON_SEQUENCE1 = [
+        ("img/kongZhiTai/save.PNG", 1),
+    ]
+    MATCH_THRESHOLD = 0.85  # 匹配阈值
+    TIMEOUT = 10  # 每个按钮的超时时间(秒)
+    # 执行按钮序列
+    process_buttons_in_sequence(BUTTON_SEQUENCE1, MATCH_THRESHOLD, TIMEOUT)
+    pyautogui.press('esc')
+    BUTTON_SEQUENCE2 = [
+        ("img/kongZhiTai/cheak.PNG", 1),
+    ]
+    MATCH_THRESHOLD = 0.85  # 匹配阈值
+    TIMEOUT = 10  # 每个按钮的超时时间(秒)
+    # 执行按钮序列
+    process_buttons_in_sequence(BUTTON_SEQUENCE2, MATCH_THRESHOLD, TIMEOUT)
 
 def click_AB():
     BUTTON_SEQUENCE = [
@@ -141,7 +213,7 @@ def click_AB():
         ("img/UserManagement/Loginjiankong.PNG", 1),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
-    TIMEOUT = 1800  # 每个按钮的超时时间(秒)
+    TIMEOUT = 180  # 每个按钮的超时时间(秒)
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
 
@@ -152,9 +224,10 @@ def close_AB():
         ("img/UserManagement/Userallin.PNG", 1),
         ("img/UserManagement/UserF5.PNG", 1),
         ("img/UserManagement/StopLogin.PNG", 1),
+
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
-    TIMEOUT = 1800  # 每个按钮的超时时间(秒)
+    TIMEOUT = 180  # 每个按钮的超时时间(秒)
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
 
