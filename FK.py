@@ -1,11 +1,14 @@
+import time
+import webbrowser
+
 from flask import Flask, render_template, request, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime
 import json
 import os
 from functools import wraps
-import time
 import psutil
+import excelChange
 import opencv_button_click
 import platform
 import win32gui
@@ -21,6 +24,7 @@ STATUS_FILE = "status.json"
 desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
 A_name = desktop_path + "\A组"
 B_name = desktop_path + "\B组"
+outTxtName = desktop_path + "\导出信息\\"
 
 
 # 初始化文件（首次运行时创建）
@@ -330,7 +334,9 @@ def workflow_task(desc):
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "A组停止":
         set_window_topmost("yoo", topmost=True)
-        opencv_button_click.outExcel()
+        timeNow = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        opencv_button_click.outExcel(timeNow)
+        excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx")
         opencv_button_click.close_AB()
         opencv_button_click.close_exe()
         close_window("yoo")
@@ -347,7 +353,9 @@ def workflow_task(desc):
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "B组停止":
         set_window_topmost("yoo", topmost=True)
-        opencv_button_click.outExcel()
+        timeNow = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        opencv_button_click.outExcel(timeNow)
+        excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx")
         opencv_button_click.close_AB()
         opencv_button_click.close_exe()
         close_window("yoo")
@@ -537,5 +545,4 @@ if __name__ == '__main__':
     desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
     A_name = desktop_path + "\A组"
     B_name = desktop_path + "\B组"
-    print(A_name)
     app.run(debug=True)

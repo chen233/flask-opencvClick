@@ -230,16 +230,11 @@ def txt_to_excel_with_history(txt_path, excel_path):
                 ws.cell(row=row, column=green_col_idx).font = green_font
 
     # 保存文件
-    wb.save(excel_path)
-    print(f"\n✅ 数据更新完成！Excel文件路径：{excel_path}")
+    wb.save("角色数据_历史追踪.xlsx")
+    print(f"\n✅ 数据更新完成！")
     print("提示：")
     print("- 🔴 红色文字（更新金币）：可手动修改的字段")
     print("- 🟢 绿色文字（天数、每天产量、总计产生）：自动计算的字段")
     print("- 手动修改日期后，重新运行本程序即可更新天数！")
 
 
-# 运行入口
-if __name__ == "__main__":
-    TXT_PATH = "2025-09-21_07-02-26.txt"  # 当天的TXT文件
-    EXCEL_PATH = "角色数据_历史追踪.xlsx"  # 固定Excel文件
-    txt_to_excel_with_history(TXT_PATH, EXCEL_PATH)

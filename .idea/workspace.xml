@@ -4,13 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8f7f12d-887e-4aff-b174-a7f8029266b2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/flask-opencvClick.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+    <list default="true" id="c8f7f12d-887e-4aff-b174-a7f8029266b2" name="Changes" comment="增加点击情况，以及根据实际修改">
+      <change afterPath="$PROJECT_DIR$/start_FK.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FK.py" beforeDir="false" afterPath="$PROJECT_DIR$/FK.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/excelChange.py" beforeDir="false" afterPath="$PROJECT_DIR$/excelChange.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/opencv_button_click.py" beforeDir="false" afterPath="$PROJECT_DIR$/opencv_button_click.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/status.json" beforeDir="false" afterPath="$PROJECT_DIR$/status.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
@@ -127,6 +128,18 @@
       <option name="presentableId" value="Default" />
       <updated>1760494194030</updated>
     </task>
+    <task id="LOCAL-00001" summary="增加点击情况，以及根据实际修改">
+      <created>1760549681784</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1760549681784</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="增加点击情况，以及根据实际修改" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加点击情况，以及根据实际修改" />
   </component>
 </project>

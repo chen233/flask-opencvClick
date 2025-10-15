@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import cv2
 import numpy as np
 import mss
@@ -175,7 +173,7 @@ def close_exe():
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
 
-def outExcel():
+def outExcel(timeNow):
     BUTTON_SEQUENCE = [
         ("img/kongZhiTai/kongZhiTai1.PNG", 1),
         ("img/kongZhiTai/outTxt.PNG", 1),
@@ -186,8 +184,7 @@ def outExcel():
     TIMEOUT = 10  # 每个按钮的超时时间(秒)
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
-
-    auto_input_filename(datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+    auto_input_filename(timeNow)
     BUTTON_SEQUENCE1 = [
         ("img/kongZhiTai/save.PNG", 1),
     ]
