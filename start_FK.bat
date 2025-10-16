@@ -1,3 +1,4 @@
+chcp 65001
 @echo off
 echo 正在启动FK程序...
 python FK.py  # 启动程序

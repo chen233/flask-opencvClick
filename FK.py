@@ -1,6 +1,5 @@
+import hashlib
 import time
-import webbrowser
-
 from flask import Flask, render_template, request, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime
@@ -26,6 +25,96 @@ A_name = desktop_path + "\A组"
 B_name = desktop_path + "\B组"
 outTxtName = desktop_path + "\导出信息\\"
 
+# 授权文件（隐藏文件+复杂名称，降低被发现的概率）
+LICENSE_FILE = ".app_license_v3.dat"
+# 加密盐值（可自定义，增加破解难度）
+SECRET_SALT = "chen233"
+
+
+def encrypt(text):
+    """简单加密：盐值+MD5哈希（不可逆，适合存储时间戳）"""
+    return hashlib.md5(f"{text}_{SECRET_SALT}".encode()).hexdigest()
+
+
+def get_file_create_time(file_path):
+    """获取文件创建时间（作为删除后重置的备用校验）"""
+    if os.path.exists(file_path):
+        # Windows系统用st_ctime（创建时间），Linux用st_birthtime
+        try:
+            return os.stat(file_path).st_birthtime
+        except AttributeError:
+            return os.stat(file_path).st_ctime
+    return None
+
+
+def check_license():
+    # 首次运行：创建授权文件
+    if not os.path.exists(LICENSE_FILE):
+        # 记录当前时间戳（加密存储）
+        now = datetime.datetime.now()
+        timestamp = now.timestamp()
+        encrypted_time = encrypt(str(timestamp))
+        # 生成校验码（防止文件被篡改）
+        check_code = encrypt(f"{timestamp}_check")
+
+        with open(LICENSE_FILE, "w", encoding="utf-8") as f:
+            json.dump({
+                "encrypted_time": encrypted_time,  # 加密后的首次运行时间
+                "check_code": check_code,  # 校验码
+                "registered": False  # 是否激活
+            }, f)
+        return True
+
+    # 已存在授权文件：校验合法性
+    try:
+        with open(LICENSE_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        # 1. 先检查是否已激活（已激活直接通过）
+        if data["registered"]:
+            return True
+
+        # 2. 校验文件是否被篡改（对比校验码）
+        # 暴力破解提示：这里需要遍历可能的时间戳范围（但用户很难猜到盐值和逻辑）
+        # 简化处理：假设用户未破解，直接用文件创建时间反推首次运行时间
+        file_create_ts = get_file_create_time(LICENSE_FILE)
+        if not file_create_ts:
+            return False  # 文件异常
+
+        # 生成校验码并比对（检测文件是否被手动修改）
+        expected_check = encrypt(f"{file_create_ts}_check")
+        if data["check_code"] != expected_check:
+            return False  # 文件被篡改
+
+        # 3. 计算是否超过30天
+        first_run = datetime.datetime.fromtimestamp(file_create_ts)
+        days_used = (datetime.datetime.now() - first_run).days
+        if days_used > 30:
+            return False  # 超过试用期
+
+        return True
+
+    except (json.JSONDecodeError, KeyError):
+        # 文件格式错误或被篡改，直接判定为无效
+        return False
+
+
+def activate():
+    """激活授权（用户付款后调用）"""
+    if os.path.exists(LICENSE_FILE):
+        try:
+            with open(LICENSE_FILE, "r+", encoding="utf-8") as f:
+                data = json.load(f)
+                # 激活时更新校验码（防止激活后被篡改）
+                data["registered"] = True
+                data["check_code"] = encrypt("activated_" + data["encrypted_time"])
+                f.seek(0)
+                f.truncate()
+                json.dump(data, f)
+            return True
+        except:
+            return False
+    return False
 
 # 初始化文件（首次运行时创建）
 def init_files():
@@ -334,10 +423,11 @@ def workflow_task(desc):
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "A组停止":
         set_window_topmost("yoo", topmost=True)
-        timeNow = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        timeNow = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         opencv_button_click.outExcel(timeNow)
         excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx")
         opencv_button_click.close_AB()
+        set_window_topmost("yoo", topmost=False)
         opencv_button_click.close_exe()
         close_window("yoo")
         task_result = f"[{desc}] else业务逻辑执行完成"  # 模拟业务结果
@@ -353,10 +443,11 @@ def workflow_task(desc):
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "B组停止":
         set_window_topmost("yoo", topmost=True)
-        timeNow = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        timeNow = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         opencv_button_click.outExcel(timeNow)
         excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx")
         opencv_button_click.close_AB()
+        set_window_topmost("yoo", topmost=False)
         opencv_button_click.close_exe()
         close_window("yoo")
         task_result = f"[{desc}] else业务逻辑执行完成"  # 模拟业务结果
@@ -542,6 +633,15 @@ def get_status():
 
 
 if __name__ == '__main__':
+    if not check_license():
+        print("提示：试用已到期，请联系作者付款激活")
+        print("提示：试用已到期，请联系作者付款激活")
+        print("提示：试用已到期，请联系作者付款激活")
+        print("提示：试用已到期，请联系作者付款激活")
+        time.sleep(200000)
+        exit(1)  # 直接退出程序
+
+    # 下面是你的主程序逻辑
     desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
     A_name = desktop_path + "\A组"
     B_name = desktop_path + "\B组"
