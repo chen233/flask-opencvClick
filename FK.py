@@ -48,20 +48,19 @@ def get_file_create_time(file_path):
 
 
 def check_license():
-    # 首次运行：创建授权文件
+    # 首次运行：创建授权文件（记录真实时间戳，而非依赖文件系统时间）
     if not os.path.exists(LICENSE_FILE):
-        # 记录当前时间戳（加密存储）
         now = datetime.datetime.now()
-        timestamp = now.timestamp()
-        encrypted_time = encrypt(str(timestamp))
-        # 生成校验码（防止文件被篡改）
-        check_code = encrypt(f"{timestamp}_check")
+        timestamp = now.timestamp()  # 真实时间戳（未加密）
+        encrypted_time = encrypt(str(timestamp))  # 加密存储，防止篡改
+        check_code = encrypt(f"{timestamp}_check")  # 基于真实时间生成校验码
 
         with open(LICENSE_FILE, "w", encoding="utf-8") as f:
             json.dump({
                 "encrypted_time": encrypted_time,  # 加密后的首次运行时间
-                "check_code": check_code,  # 校验码
-                "registered": False  # 是否激活
+                "raw_timestamp": timestamp,  # 新增：存储原始时间戳（用于计算）
+                "check_code": check_code,
+                "registered": False
             }, f)
         return True
 
@@ -70,44 +69,33 @@ def check_license():
         with open(LICENSE_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        # 1. 先检查是否已激活（已激活直接通过）
         if data["registered"]:
             return True
 
-        # 2. 校验文件是否被篡改（对比校验码）
-        # 暴力破解提示：这里需要遍历可能的时间戳范围（但用户很难猜到盐值和逻辑）
-        # 简化处理：假设用户未破解，直接用文件创建时间反推首次运行时间
-        file_create_ts = get_file_create_time(LICENSE_FILE)
-        if not file_create_ts:
-            return False  # 文件异常
-
-        # 生成校验码并比对（检测文件是否被手动修改）
-        expected_check = encrypt(f"{file_create_ts}_check")
+        # 校验文件是否被篡改（基于原始时间戳）
+        expected_check = encrypt(f"{data['raw_timestamp']}_check")
         if data["check_code"] != expected_check:
-            return False  # 文件被篡改
+            return False
 
-        # 3. 计算是否超过30天
-        first_run = datetime.datetime.fromtimestamp(file_create_ts)
+        # 计算试用期（基于文件内存储的原始时间戳，而非文件系统时间）
+        first_run = datetime.datetime.fromtimestamp(data["raw_timestamp"])
         days_used = (datetime.datetime.now() - first_run).days
         if days_used > 30:
-            return False  # 超过试用期
+            return False
 
         return True
 
     except (json.JSONDecodeError, KeyError):
-        # 文件格式错误或被篡改，直接判定为无效
         return False
 
-
 def activate():
-    """激活授权（用户付款后调用）"""
     if os.path.exists(LICENSE_FILE):
         try:
             with open(LICENSE_FILE, "r+", encoding="utf-8") as f:
                 data = json.load(f)
-                # 激活时更新校验码（防止激活后被篡改）
                 data["registered"] = True
-                data["check_code"] = encrypt("activated_" + data["encrypted_time"])
+                # 基于原始时间戳生成激活校验码
+                data["check_code"] = encrypt("activated_" + str(data["raw_timestamp"]))
                 f.seek(0)
                 f.truncate()
                 json.dump(data, f)

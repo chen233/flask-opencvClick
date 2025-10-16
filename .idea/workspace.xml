@@ -4,26 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8f7f12d-887e-4aff-b174-a7f8029266b2" name="Changes" comment="增加点击情况，以及根据实际修改">
-      <change afterPath="$PROJECT_DIR$/启动方式教学.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/工作流网址.url" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/激活工具.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/首次安装点击我.bat" afterDir="false" />
+    <list default="true" id="c8f7f12d-887e-4aff-b174-a7f8029266b2" name="Changes" comment="增加授权码，放在激活工具内。原理就是改变授权记录文件的字段">
+      <change afterPath="$PROJECT_DIR$/111.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/11.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/2025-09-21_07-02-26.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/2025-10-15_11-22-00.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/FK.py" beforeDir="false" afterPath="$PROJECT_DIR$/FK.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img/kongZhiTai/closeGame1.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/img/kongZhiTai/closeGame1.PNG" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opencv_button_click.py" beforeDir="false" afterPath="$PROJECT_DIR$/opencv_button_click.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/start_FK.bat" beforeDir="false" afterPath="$PROJECT_DIR$/start_FK.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/status.json" beforeDir="false" afterPath="$PROJECT_DIR$/status.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -191,11 +190,19 @@
       <option name="project" value="LOCAL" />
       <updated>1760554120377</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="增加授权码，放在激活工具内。原理就是改变授权记录文件的字段">
+      <created>1760626756654</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1760626756654</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="增加点击情况，以及根据实际修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加点击情况，以及根据实际修改" />
+    <MESSAGE value="增加授权码，放在激活工具内。原理就是改变授权记录文件的字段" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加授权码，放在激活工具内。原理就是改变授权记录文件的字段" />
   </component>
 </project>
