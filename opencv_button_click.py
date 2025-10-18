@@ -203,6 +203,7 @@ def open_exe(exe_files):
                 try:
                     # 打开找到的exe文件
                     os.startfile(exe_path)
+                    time.sleep(15)
                     from FK import set_window_topmost
                     set_window_topmost("必读公告", topmost=True)
                     BUTTON_SEQUENCE = [

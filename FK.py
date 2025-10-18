@@ -218,9 +218,12 @@ def shutdown_machine():
     """执行关机操作，根据操作系统类型适配"""
     # 将标题包含"yoo"的窗口置顶
     set_window_topmost("yoo", topmost=True)
+    opencv_button_click.close_AB()
+    opencv_button_click.close_exe()
     try:
         sys_name = platform.system()
         opencv_button_click.close_vm()
+        print('已关闭虚拟机，开始执行关机任务')
         if sys_name == "Windows":
             os.system("shutdown /s /t 60")  # Windows系统，60秒后关机
         elif sys_name == "Linux" or sys_name == "Darwin":  # Linux或macOS
@@ -413,7 +416,7 @@ def workflow_task(desc):
         set_window_topmost("yoo", topmost=True)
         timeNow = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         opencv_button_click.outExcel(timeNow)
-        excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx")
+        excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx", group="A组")
         opencv_button_click.close_AB()
         set_window_topmost("yoo", topmost=False)
         opencv_button_click.close_exe()
@@ -433,7 +436,7 @@ def workflow_task(desc):
         set_window_topmost("yoo", topmost=True)
         timeNow = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         opencv_button_click.outExcel(timeNow)
-        excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx")
+        excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx", group="B组")
         opencv_button_click.close_AB()
         set_window_topmost("yoo", topmost=False)
         opencv_button_click.close_exe()

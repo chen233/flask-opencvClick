@@ -56,13 +56,16 @@ def calculate_days(start_date_str, end_date_str):
     return abs((end_date - start_date).days)
 
 
-def txt_to_excel_with_history(txt_path, excel_path):
+def txt_to_excel_with_history(txt_path, excel_path, group=""):
     """支持手动修改日期后重新计算天数，使用文字颜色标记可改动区域"""
     excel_columns = [
         '角色ID', '最初统计时间', '更新统计时间', '初始金币', '更新金币',
+        '最近三天总产量',  # 新增：放在"更新金币"后
         '天数', '每天产量', '总计产生', '银币', '等级', '门派',
-        '角色', '服务器', '角色名', '关联账号', '关联密码'
+        '角色', '服务器', '角色名', '关联账号', '关联密码',
+        '所属组别'  # 新增：放在末尾
     ]
+
 
     # ---------------------- 1. 读取TXT数据 ----------------------
     file_encoding = get_file_encoding(txt_path)
@@ -126,6 +129,7 @@ def txt_to_excel_with_history(txt_path, excel_path):
                 '更新统计时间': new_data['更新统计时间'],
                 '初始金币': new_data['更新金币'],
                 '更新金币': new_data['更新金币'],
+                '最近三天总产量': 0,  # 新增：初始化为0
                 '银币': new_data['银币'],
                 '等级': new_data['等级'],
                 '门派': new_data['门派'],
@@ -133,7 +137,9 @@ def txt_to_excel_with_history(txt_path, excel_path):
                 '服务器': new_data['服务器'],
                 '角色名': new_data['角色名'],
                 '关联账号': new_data['关联账号'],
-                '关联密码': new_data['关联密码']
+                '关联密码': new_data['关联密码'],
+                '所属组别': '',  # 新增：初始为空，后续由FK.py传入
+
             }
             # 计算天数（首次录入可能为0，默认1）
             days = calculate_days(new_row['最初统计时间'], new_row['更新统计时间'])
@@ -141,6 +147,7 @@ def txt_to_excel_with_history(txt_path, excel_path):
             total_produce = float(new_row['更新金币']) - float(new_row['初始金币'])
             new_row['总计产生'] = round(total_produce, 2)
             new_row['每天产量'] = round(total_produce / new_row['天数'], 2) if new_row['天数'] != 0 else 0
+            new_row['所属组别'] = group  # 写入组别
             # 添加到DataFrame
             excel_df = pd.concat([excel_df, pd.DataFrame([new_row])], ignore_index=True)
             id_to_index[role_id] = len(excel_df) - 1
@@ -169,6 +176,12 @@ def txt_to_excel_with_history(txt_path, excel_path):
             excel_df.at[idx, '总计产生'] = round(total_produce, 2)
             excel_df.at[idx, '每天产量'] = round(total_produce / excel_df.at[idx, '天数'], 2) if excel_df.at[
                                                                                                      idx, '天数'] != 0 else 0
+            # 新增：计算最近三天总产量
+            # 获取当前行及前两行的“每天产量”（需确保数据按时间顺序排列）
+            current_daily = float(excel_df.at[idx, '每天产量'])
+            prev1_daily = float(excel_df.at[idx - 1, '每天产量']) if idx > 0 else 0  # 前一天
+            prev2_daily = float(excel_df.at[idx - 2, '每天产量']) if idx > 1 else 0  # 前两天
+            excel_df.at[idx, '最近三天总产量'] = round(current_daily + prev1_daily + prev2_daily, 2)
 
     # 处理空值
     final_df = excel_df.fillna({
