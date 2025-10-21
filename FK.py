@@ -122,6 +122,10 @@ def init_files():
                 "time6": "00:00",
                 "time7": "00:00",
                 "time8": "00:00",
+                "time9": "00:00",
+                "time10": "00:00",
+                "time11": "00:00",
+                "time12": "00:00",
                 "shutdown_time": "23:59"  # 添加关机时间配置
 
             },
@@ -219,6 +223,7 @@ def shutdown_machine():
     # 将标题包含"yoo"的窗口置顶
     set_window_topmost("yoo", topmost=True)
     opencv_button_click.close_AB()
+    set_window_topmost("yoo", topmost=False)
     opencv_button_click.close_exe()
     try:
         sys_name = platform.system()
@@ -512,7 +517,30 @@ def start_workflow():
             minute=config["time8"].split(':')[1],
             args=["B组停止"]
         )
-
+        scheduler.add_job(
+            workflow_task, 'cron',
+            hour=config["time9"].split(':')[0],
+            minute=config["time9"].split(':')[1],
+            args=["A组停止"]
+        )
+        scheduler.add_job(
+            workflow_task, 'cron',
+            hour=config["time10"].split(':')[0],
+            minute=config["time10"].split(':')[1],
+            args=["B组开始"]
+        )
+        scheduler.add_job(
+            workflow_task, 'cron',
+            hour=config["time11"].split(':')[0],
+            minute=config["time11"].split(':')[1],
+            args=["B组停止"]
+        )
+        scheduler.add_job(
+            workflow_task, 'cron',
+            hour=config["time12"].split(':')[0],
+            minute=config["time12"].split(':')[1],
+            args=["B组停止"]
+        )
         # 更新状态为运行中
         status["workflow_running"] = True
         write_status(status)
@@ -555,32 +583,6 @@ def save_config():
         return jsonify({"success": True, "message": "配置保存成功"})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
-#
-# # 在FK.py中添加导出功能处理函数
-# def export_data():
-#     """导出功能执行函数"""
-#     try:
-#         # 这里添加你需要执行的导出逻辑
-#         print("执行导出操作...")
-#         # 示例：可以在这里添加导出文件、处理数据等操作
-#         write_log("导出操作已执行")
-#         return True, "导出成功"
-#     except Exception as e:
-#         write_log(f"导出失败: {str(e)}")
-#         return False, str(e)
-#
-# # 添加导出API接口
-# @app.route('/api/export', methods=['POST'])
-# def handle_export():
-#     try:
-#         success, message = export_data()
-#         if success:
-#             return jsonify({"success": True, "message": message})
-#         else:
-#             return jsonify({"success": False, "message": message})
-#     except Exception as e:
-#         return jsonify({"success": False, "message": str(e)})
-#
 
 # 获取最新日志（支持分页，避免一次性加载过大文件）
 @app.route('/api/get_log', methods=['GET'])
@@ -615,6 +617,10 @@ def get_status():
                 "time6": "19:00",
                 "time7": "21:00",
                 "time8": "23:59",
+                "time9": "19:00",
+                "time10": "21:00",
+                "time11": "23:59",
+                "time12": "23:59",
                 "shutdown_time": "23:59"  # 添加关机时间
             }),
             "shutdown_scheduled": status.get("shutdown_scheduled", False)  # 添加关机状态

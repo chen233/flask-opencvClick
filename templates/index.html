@@ -12,7 +12,7 @@
             border-radius: 5px;
         }
         .log-content {
-            height: 300px;
+            height: 150px;
             overflow-y: auto;
             border: 1px dashed #aaa;
             padding: 5px;
@@ -47,7 +47,7 @@
                 <input type="time" id="time4" value="00:00">
             </div>
         </div>
-        <div style="display: table-cell;">
+        <div style="display: table-cell;width:300px">
             <div>
                 <label>A组开始:</label>
                 <input type="time" id="time5" value="00:00">
@@ -64,6 +64,25 @@
             <div>
                 <label>B组停止:</label>
                 <input type="time" id="time8" value="00:00">
+            </div>
+        </div>
+        <div style="display: table-cell;">
+            <div>
+                <label>A组开始:</label>
+                <input type="time" id="time9" value="00:00">
+            </div>
+            <div>
+                <label>A组停止:</label>
+                <input type="time" id="time10" value="00:00">
+            </div>
+            <div>
+                <label>B组开始:</label>
+                <input type="time" id="time11" value="00:00">
+            </div>
+
+            <div>
+                <label>B组停止:</label>
+                <input type="time" id="time12" value="00:00">
             </div>
         </div>
     </div>
@@ -170,6 +189,10 @@ function fetchStatus() {
                 document.getElementById('time6').value = data.config.time6 || '19:00';
                 document.getElementById('time7').value = data.config.time7 || '21:00';
                 document.getElementById('time8').value = data.config.time8 || '23:59';
+                document.getElementById('time9').value = data.config.time9 || '23:59';
+                document.getElementById('time10').value = data.config.time10 || '23:59';
+                document.getElementById('time11').value = data.config.time11 || '23:59';
+                document.getElementById('time12').value = data.config.time12 || '23:59';
 
                 // 更新工作流状态显示
                 updateStatus(data.running);
@@ -231,20 +254,6 @@ function updateStatus(isRunning) {
                 appendLog("请求错误: " + error);
             });
         });
-<!--        document.getElementById('exportBtn').addEventListener('click', async function() {-->
-<!--            try {-->
-<!--                const response = await fetch('/api/export', {-->
-<!--                    method: 'POST',-->
-<!--                    headers: {-->
-<!--                        'Content-Type': 'application/json'-->
-<!--                    }-->
-<!--                });-->
-<!--                const result = await response.json();-->
-<!--                alert(result.message);-->
-<!--            } catch (e) {-->
-<!--                alert('导出失败: ' + e.message);-->
-<!--            }-->
-<!--        });-->
 
         // 保存配置
         document.getElementById("saveConfig").addEventListener("click", function() {
@@ -256,7 +265,11 @@ function updateStatus(isRunning) {
                 time5: document.getElementById("time5").value,
                 time6: document.getElementById("time6").value,
                 time7: document.getElementById("time7").value,
-                time8: document.getElementById("time8").value
+                time8: document.getElementById("time8").value,
+                time9: document.getElementById("time9").value,
+                time10: document.getElementById("time10").value,
+                time11: document.getElementById("time11").value,
+                time12: document.getElementById("time12").value,
             };
             fetch("/api/save_config", {
                 method: "POST",

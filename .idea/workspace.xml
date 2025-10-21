@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8f7f12d-887e-4aff-b174-a7f8029266b2" name="Changes" comment="修改md">
+    <list default="true" id="c8f7f12d-887e-4aff-b174-a7f8029266b2" name="Changes" comment="关机时候没关闭游戏。然后表格做了新需求">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FK.py" beforeDir="false" afterPath="$PROJECT_DIR$/FK.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/excelChange.py" beforeDir="false" afterPath="$PROJECT_DIR$/excelChange.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/opencv_button_click.py" beforeDir="false" afterPath="$PROJECT_DIR$/opencv_button_click.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/status.json" beforeDir="false" afterPath="$PROJECT_DIR$/status.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/角色数据_历史追踪.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +48,7 @@
       <recent name="D:\code\flask-opencvClick\img\kongZhiTai" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.111">
+  <component name="RunManager" selected="Python.FK">
     <configuration name="激活工具" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="flask-opencvClick" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -158,8 +156,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.111" />
         <item itemvalue="Python.FK" />
+        <item itemvalue="Python.111" />
         <item itemvalue="Python.激活工具" />
         <item itemvalue="Python.激活工具" />
         <item itemvalue="Python.excelChange" />
@@ -210,7 +208,14 @@
       <option name="project" value="LOCAL" />
       <updated>1760633865528</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="关机时候没关闭游戏。然后表格做了新需求">
+      <created>1760806112340</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1760806112340</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -218,6 +223,7 @@
     <MESSAGE value="增加授权码，放在激活工具内。原理就是改变授权记录文件的字段" />
     <MESSAGE value="重新修改授权码，加入存储原始时间。raw_timestamp" />
     <MESSAGE value="修改md" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改md" />
+    <MESSAGE value="关机时候没关闭游戏。然后表格做了新需求" />
+    <option name="LAST_COMMIT_MESSAGE" value="关机时候没关闭游戏。然后表格做了新需求" />
   </component>
 </project>
