@@ -95,7 +95,7 @@ def open_vm():
         ("img/VMguanli/VMopen.PNG", 600),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
-    TIMEOUT = 1800  # 每个按钮的超时时间(秒)
+    TIMEOUT = 400  # 每个按钮的超时时间(秒)
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
 def close_vm():
@@ -187,7 +187,7 @@ def close_AB():
 
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
-    TIMEOUT = 10  # 每个按钮的超时时间(秒)
+    TIMEOUT = 20  # 每个按钮的超时时间(秒)
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
 
@@ -198,12 +198,22 @@ def open_exe(exe_files):
         for file in files:
             # 检查文件名是否以点开头（通常表示隐藏文件）且是exe文件
             if file.lower().endswith('.exe') and not file.startswith('.'):
-                exe_path = os.path.join(root, "._cache_"+file)
+                exe_path = os.path.join(root, "._cache_" + file)
+                exe_path1 = os.path.join(root, file)  # 假设备用路径是不带缓存前缀的原文件（可根据实际情况修改）
                 print(f"找到并打开exe文件: {exe_path}")
                 try:
-                    # 打开找到的exe文件
+                    # 先尝试打开主路径
                     os.startfile(exe_path)
-                    time.sleep(15)
+                except Exception as e:
+                    print(f"打开主路径失败: {e}，尝试备用路径: {exe_path1}")
+                    try:
+                        # 主路径失败时尝试备用路径
+                        os.startfile(exe_path1)
+                    except Exception as e2:
+                        print(f"备用路径也打开失败: {e2}，跳过该文件")
+                        continue  # 两个路径都失败则跳过当前文件
+
+                    time.sleep(50)
                     from FK import set_window_topmost
                     set_window_topmost("必读公告", topmost=True)
                     BUTTON_SEQUENCE = [
@@ -215,8 +225,6 @@ def open_exe(exe_files):
                     TIMEOUT = 180  # 每个按钮的超时时间(秒)
                     # 执行按钮序列
                     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)
-                except Exception as e:
-                    print(f"打开文件时出错: {e}")
 
 def close_exe():
     BUTTON_SEQUENCE = [
@@ -229,6 +237,6 @@ def close_exe():
         ("img/kongZhiTai/closeGame1.PNG", 5),
     ]
     MATCH_THRESHOLD = 0.85  # 匹配阈值
-    TIMEOUT = 10  # 每个按钮的超时时间(秒)
+    TIMEOUT = 20  # 每个按钮的超时时间(秒)
     # 执行按钮序列
     process_buttons_in_sequence(BUTTON_SEQUENCE, MATCH_THRESHOLD, TIMEOUT)

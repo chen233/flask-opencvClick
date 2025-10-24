@@ -410,40 +410,47 @@ def workflow_task(desc):
     if desc == "A组开始":
         opencv_button_click.open_exe(A_name)
         set_window_topmost("yoo", topmost=True)
+        set_window_topmost("yoo", topmost=False)
         if running_vms:
             print(f"检测到运行中的VM程序：{', '.join(running_vms)}")
         else:
             print("未检测到运行中的VM程序")
             opencv_button_click.open_vm()
+        set_window_topmost("yoo", topmost=True)
+        set_window_topmost("yoo", topmost=False)
         opencv_button_click.click_AB()
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "A组停止":
         set_window_topmost("yoo", topmost=True)
+        set_window_topmost("yoo", topmost=False)
         timeNow = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        opencv_button_click.outExcel(timeNow)
+        opencv_button_click.outExcel(outTxtName+timeNow)
         excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx", group="A组")
         opencv_button_click.close_AB()
-        set_window_topmost("yoo", topmost=False)
+
         opencv_button_click.close_exe()
         close_window("yoo")
         task_result = f"[{desc}] else业务逻辑执行完成"  # 模拟业务结果
     elif desc == "B组开始":
         opencv_button_click.open_exe(B_name)
         set_window_topmost("yoo", topmost=True)
+        set_window_topmost("yoo", topmost=False)
         if running_vms:
             print(f"检测到运行中的VM程序：{', '.join(running_vms)}")
         else:
             print("未检测到运行中的VM程序")
             opencv_button_click.open_vm()
+        set_window_topmost("yoo", topmost=True)
+        set_window_topmost("yoo", topmost=False)
         opencv_button_click.click_AB()
         task_result = f"[{desc}] 业务逻辑执行完成"  # 模拟业务结果
     elif desc == "B组停止":
         set_window_topmost("yoo", topmost=True)
+        set_window_topmost("yoo", topmost=False)
         timeNow = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        opencv_button_click.outExcel(timeNow)
+        opencv_button_click.outExcel(outTxtName+timeNow)
         excelChange.txt_to_excel_with_history(outTxtName+timeNow+".txt", "角色数据_历史追踪.xlsx", group="B组")
         opencv_button_click.close_AB()
-        set_window_topmost("yoo", topmost=False)
         opencv_button_click.close_exe()
         close_window("yoo")
         task_result = f"[{desc}] else业务逻辑执行完成"  # 模拟业务结果

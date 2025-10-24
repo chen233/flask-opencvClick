@@ -4,12 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c8f7f12d-887e-4aff-b174-a7f8029266b2" name="Changes" comment="关机时候没关闭游戏。然后表格做了新需求">
+    <list default="true" id="c8f7f12d-887e-4aff-b174-a7f8029266b2" name="Changes" comment="新增需求，多一组时间">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/111.py" beforeDir="false" afterPath="$PROJECT_DIR$/111.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FK.py" beforeDir="false" afterPath="$PROJECT_DIR$/FK.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opencv_button_click.py" beforeDir="false" afterPath="$PROJECT_DIR$/opencv_button_click.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/status.json" beforeDir="false" afterPath="$PROJECT_DIR$/status.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/启动方式教学.txt" beforeDir="false" afterPath="$PROJECT_DIR$/启动方式教学.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
